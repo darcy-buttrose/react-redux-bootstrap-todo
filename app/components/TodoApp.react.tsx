@@ -5,6 +5,7 @@ import {ITask} from "../models/ITask";
 import Task from "../models/Task";
 import TodoItem from "./TodoItem.react";
 import NewTodoItem from "./NewTodoItem.react";
+import state$ from "../Models/Model";
 
 interface ITodoAppProps { }
 interface ITodoAppState { nextId:number; todos: List<ITask> }
@@ -13,20 +14,18 @@ export default class TodoApp extends React.Component<ITodoAppProps, ITodoAppStat
     constructor(props) {
         super(props);
         this.state = {
-            nextId: 2,
+            nextId: 0,
             todos: List<Task>([
-                new Task(0,"Yow","Go To Yow"),
-                new Task(1,"Home","Go Home")
             ])
         }
-    };
-    
-    onSave(task: ITask) {
-        this.setState({
-            nextId: this.state.nextId + 1,
-            todos: List<Task>(this.state.todos.concat(task))
+        
+        state$.subscribe((state:List<ITask>) => {
+            this.setState({
+                nextId: state.size + 1,
+                todos: state
+            })
         });
-    }
+    };
     
     render() {
         let todoList = this.state.todos.map((task: Task) => {
@@ -34,7 +33,7 @@ export default class TodoApp extends React.Component<ITodoAppProps, ITodoAppStat
         });
         return  <div>
                     <div>{todoList}</div>
-                    <NewTodoItem nextId={this.state.nextId} onSave={this.onSave.bind(this)} />
+                    <NewTodoItem nextId={this.state.nextId} />
                 </div>;
     }
 }

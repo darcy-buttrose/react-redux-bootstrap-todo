@@ -13,13 +13,19 @@ export default class Task implements ITask {
         return this.description;
     }
     
-    constructor(id:number, title:string, description:string) {
+    get Complete(): boolean {
+        return this.complete;
+    }
+    
+    constructor(id:number, title:string, description:string, complete:boolean) {
         this.id = id;
         this.title = title;
         this.description = description;
+        this.complete = complete;
     }
     
     private id: number;
     private title: string;
     private description: string;
+    private complete: boolean;
 }
