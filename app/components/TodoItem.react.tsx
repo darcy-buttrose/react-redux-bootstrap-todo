@@ -62,7 +62,7 @@ export default class TodoItem extends React.Component<ITodoItemProps,ITodoItemSt
         return  <li>
                     <input type='checkbox' checked={this.state.task.Complete} onChange={this.onCompleteChanged.bind(this)} />
                     {this.state.task.Title} - {this.state.task.Description}
-                    <button className='destroy' onClick={this.onDelete.bind(this)}></button>
+                    <button className='destroy' onClick={this.onDelete.bind(this)} />
                 </li>;
     }
 }

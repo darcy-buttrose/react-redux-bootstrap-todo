@@ -14,38 +14,44 @@ var initialState: IState = {
 };
 
 var state$ : Observable<IState> = intent$
-        .scan<IState>((state,action) => applyAction(state,action),initialState);
+        .scan<IState>(reducer,initialState);
 
-function applyAction(state:IState, action:IAction):IState {
+function reducer(state:IState, action:IAction):IState {
+        return {
+                nextId: nextIdReducer(state.nextId,action),
+                todos: todosReducer(state.todos,action)
+        }
+}
+
+function nextIdReducer(state:number,action:IAction):number {
         switch(action.key) {
                 case Keys.AddTodo:
-                        return {
-                                nextId: state.nextId + 1,
-                                todos: List<ITask>(state.todos.concat([action.payload]))
-                        }
+                        return state + 1;
+        }
+        return state;
+}
+
+function todosReducer(state:List<ITask>, action:IAction):List<ITask> {
+        switch(action.key) {
+                case Keys.AddTodo:
+                        return List<ITask>(state.concat([action.payload]))
                 case Keys.CompleteTodo:
-                        return {
-                                nextId: state.nextId,
-                                todos: List<ITask>(state.todos.map((task:ITask) => {
-                                        if (task.Id === action.payload.Id) {
-                                                return new Task(
-                                                        task.Id,
-                                                        task.Title,
-                                                        task.Description,
-                                                        action.payload.Complete
-                                                );
-                                        } else {
-                                                return task;
-                                        }
-                                }))
-                        }
+                        return List<ITask>(state.map((task:ITask) => {
+                                if (task.Id === action.payload.Id) {
+                                        return new Task(
+                                                task.Id,
+                                                task.Title,
+                                                task.Description,
+                                                action.payload.Complete
+                                        );
+                                } else {
+                                        return task;
+                                }
+                        }));
                 case Keys.RemoveTodo:
-                        return {
-                                nextId: state.nextId,
-                                todos: List<ITask>(state.todos.filter((task:ITask) => {
-                                        return task.Id !== action.payload.Id;
-                                }))
-                        }
+                        return List<ITask>(state.filter((task:ITask) => {
+                                return task.Id !== action.payload.Id;
+                        }))
         }                                 
         return state;
 }
