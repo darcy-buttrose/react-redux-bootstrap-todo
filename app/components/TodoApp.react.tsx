@@ -32,9 +32,9 @@ export default class TodoApp extends React.Component<ITodoAppProps, ITodoAppStat
         let todoList = this.state.todos.map((task: Task) => {
             return <TodoItem key={task.Id} task={task} />
         });
-        return  <div>
-                    <ul id='todo-list'>{todoList}</ul>
+        return  (<section id="main">
+                    <ul id="todo-list">{todoList}</ul>
                     <NewTodoItem nextId={this.state.nextId} />
-                </div>;
+                </section>);
     }
 }
