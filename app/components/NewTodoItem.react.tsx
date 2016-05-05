@@ -1,8 +1,8 @@
 /// <reference path="../../typings/browser.d.ts" />
 import * as React from 'react';
 import {List} from "immutable";
-import {ITask} from "../models/ITask";
-import Task from "../models/Task";
+import {ITask} from "../Models/ITask";
+import Task from "../Models/Task";
 import {IAction} from "../Intents/IAction";
 import {publish} from "../Intents/Intent";
 import {Keys} from "../Intents/Keys";

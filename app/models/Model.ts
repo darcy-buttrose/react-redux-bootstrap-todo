@@ -6,22 +6,48 @@ import {Observable} from "@reactivex/rxjs";
 import {Map,List} from "immutable";
 import {ITask} from "./ITask";
 import Task from "./Task";
+import {IState} from "./IState";
 
-var initialState: List<ITask> = List<Task>();
+var initialState: IState = {
+        nextId: 0,
+        todos: List<ITask>()
+};
 
-var state$ : Observable<List<ITask>> = intent$
-        .scan<List<ITask>>((state,action) => applyAction(state,action),initialState);
+var state$ : Observable<IState> = intent$
+        .scan<IState>((state,action) => applyAction(state,action),initialState);
 
-function applyAction(state:List<ITask>, action:IAction):List<ITask> {
-    var task:ITask = action.payload;
-    switch (action.key) {
-        case Keys.AddTodo :
-            return List<Task>(state.concat(task));
-        case Keys.UpdateTodo :
-            return state.merge([task]);
-        default:
-            return state;
-    }
+function applyAction(state:IState, action:IAction):IState {
+        switch(action.key) {
+                case Keys.AddTodo:
+                        return {
+                                nextId: state.nextId + 1,
+                                todos: List<ITask>(state.todos.concat([action.payload]))
+                        }
+                case Keys.CompleteTodo:
+                        return {
+                                nextId: state.nextId,
+                                todos: List<ITask>(state.todos.map((task:ITask) => {
+                                        if (task.Id === action.payload.Id) {
+                                                return new Task(
+                                                        task.Id,
+                                                        task.Title,
+                                                        task.Description,
+                                                        action.payload.Complete
+                                                );
+                                        } else {
+                                                return task;
+                                        }
+                                }))
+                        }
+                case Keys.RemoveTodo:
+                        return {
+                                nextId: state.nextId,
+                                todos: List<ITask>(state.todos.filter((task:ITask) => {
+                                        return task.Id !== action.payload.Id;
+                                }))
+                        }
+        }                                 
+        return state;
 }
 
 export default state$;

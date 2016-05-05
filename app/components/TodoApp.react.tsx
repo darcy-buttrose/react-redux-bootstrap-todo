@@ -1,11 +1,12 @@
 /// <reference path="../../typings/browser.d.ts" />
 import * as React from 'react';
 import {List} from "immutable";
-import {ITask} from "../models/ITask";
-import Task from "../models/Task";
+import {ITask} from "../Models/ITask";
+import Task from "../Models/Task";
 import TodoItem from "./TodoItem.react";
 import NewTodoItem from "./NewTodoItem.react";
 import state$ from "../Models/Model";
+import {IState} from "../Models/IState";
 
 interface ITodoAppProps { }
 interface ITodoAppState { nextId:number; todos: List<ITask> }
@@ -19,10 +20,10 @@ export default class TodoApp extends React.Component<ITodoAppProps, ITodoAppStat
             ])
         }
         
-        state$.subscribe((state:List<ITask>) => {
+        state$.subscribe((state:IState) => {
             this.setState({
-                nextId: state.size + 1,
-                todos: state
+                nextId: state.nextId,
+                todos: state.todos
             })
         });
     };
@@ -32,7 +33,7 @@ export default class TodoApp extends React.Component<ITodoAppProps, ITodoAppStat
             return <TodoItem key={task.Id} task={task} />
         });
         return  <div>
-                    <div>{todoList}</div>
+                    <ul id='todo-list'>{todoList}</ul>
                     <NewTodoItem nextId={this.state.nextId} />
                 </div>;
     }
