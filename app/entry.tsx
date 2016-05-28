@@ -1,7 +1,7 @@
-/// <reference path="../typings/browser.d.ts" />
+/// <reference path="../typings/index.d.ts" />
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import TodoApp from './components/TodoApp.react';
+import TodoApp from './containers/TodoApp.redux';
 
 import '../css/base.css';
 import '../css/app.css';

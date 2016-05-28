@@ -1,7 +1,8 @@
-/// <reference path="../../typings/browser.d.ts" />
-import {Keys} from "../Intents/Keys";
-import {IAction} from "../Intents/IAction"
-import {intent$} from "../Intents/Intent";
+/// <reference path="../../typings/index.d.ts" />
+
+import { combineReducers } from 'redux';
+import {IAction} from "./IAction";
+import {Keys} from "./Keys";
 import {Observable} from "@reactivex/rxjs";
 import {Map,List} from "immutable";
 import {ITask} from "./ITask";
@@ -13,15 +14,12 @@ var initialState: IState = {
         todos: List<ITask>()
 };
 
-var state$ : Observable<IState> = intent$
-        .scan<IState>(reducer,initialState);
+const reducer = combineReducers({
+        nextId: nextIdReducer,
+        todos: todosReducer
+});
 
-function reducer(state:IState, action:IAction):IState {
-        return {
-                nextId: nextIdReducer(state.nextId,action),
-                todos: todosReducer(state.todos,action)
-        }
-}
+export default reducer;
 
 function nextIdReducer(state:number,action:IAction):number {
         switch(action.key) {
@@ -55,5 +53,3 @@ function todosReducer(state:List<ITask>, action:IAction):List<ITask> {
         }                                 
         return state;
 }
-
-export default state$;

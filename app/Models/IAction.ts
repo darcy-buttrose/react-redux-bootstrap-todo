@@ -1,4 +1,4 @@
-/// <reference path="../../typings/browser.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 import {Keys} from "./Keys";
 import {List} from "immutable";
 import {ITask} from "../Models/ITask";

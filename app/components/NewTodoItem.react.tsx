@@ -1,21 +1,20 @@
-/// <reference path="../../typings/browser.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 import * as React from 'react';
 import {List} from "immutable";
 import {ITask} from "../Models/ITask";
 import Task from "../Models/Task";
-import {IAction} from "../Intents/IAction";
-import {publish} from "../Intents/Intent";
-import {Keys} from "../Intents/Keys";
+import {connect} from "react-redux";
+import {addTodo} from "../Models/Actions";
+import {IState} from "../Models/IState";
+import {addTodo} from "../Models/Actions";
+import {Keys} from "../Models/Keys";
 
-interface INewTodoItemProps { nextId: number }
+interface INewTodoItemProps { nextId: number, onSave: Function }
 interface INewTodoItemState { task: ITask }
 
-export default class TodoItem extends React.Component<INewTodoItemProps,INewTodoItemState> {
+class NewTodoItem extends React.Component<INewTodoItemProps,INewTodoItemState> {
     constructor(props: INewTodoItemProps) {
         super(props);
-        this.state = {
-            task: new Task(props.nextId,'','', false)
-        }
     }
 
     private onChangeTitle(event) {
@@ -41,10 +40,10 @@ export default class TodoItem extends React.Component<INewTodoItemProps,INewTodo
     }
 
     onSave() {
-        publish({
-            key: Keys.AddTodo,
-            payload: this.state.task
-        })
+         this.props.onSave({
+             key: Keys.AddTodo,
+             payload: this.state.task
+         })
     }
 
     _updateState(props : INewTodoItemProps) {
@@ -69,3 +68,22 @@ export default class TodoItem extends React.Component<INewTodoItemProps,INewTodo
                 </div>;
     }
 }
+
+const mapStateToProps = (state: IState) => {
+    return {}
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onSave: (payload: any) => {
+            dispatch(addTodo(payload));
+        }
+    }
+};
+
+const ConnectedNewTodoItem = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(NewTodoItem);
+
+export default ConnectedNewTodoItem as NewTodoItem;
