@@ -11,7 +11,21 @@ import {connect} from "react-redux";
 interface ITodoAppProps { }
 interface ITodoAppState { nextId:number; todos: List<ITask> }
 
-class TodoApp extends React.Component<ITodoAppProps, ITodoAppState> {
+const mapStateToProps = (state: IState) => {
+    return {
+        todos: state.todos
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {}
+};
+
+@connect(
+    mapStateToProps,
+    mapDispatchToProps
+)
+export default class TodoApp extends React.Component<ITodoAppProps, ITodoAppState> {
     constructor(props) {
         super(props);
         this.state = {
@@ -31,20 +45,3 @@ class TodoApp extends React.Component<ITodoAppProps, ITodoAppState> {
                 </section>);
     }
 }
-
-const mapStateToProps = (state: IState) => {
-    return {
-        todos: state.todos
-    }
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {}
-};
-
-const ConnectedTodoApp = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(TodoApp);
-
-export default ConnectedTodoApp as TodoApp;

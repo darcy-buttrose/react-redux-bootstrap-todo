@@ -6,11 +6,33 @@ import Task from "../Models/Task";
 import {connect} from "react-redux";
 import {IState} from "../Models/IState";
 import {completeTodo, removeTodo} from "../Models/Actions";
+import {Keys} from "../Models/Keys";
 
-interface ITodoItemProps { task: ITask }
+interface ITodoItemProps { task: ITask, onCompleteChanged: Function, onDelete: Function }
 interface ITodoItemState { task: ITask }
 
-class TodoItem extends React.Component<ITodoItemProps,ITodoItemState> {
+const mapStateToProps = (state: IState, ownProps: {task: ITask}) => {
+    return {
+        task: ownProps.task
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onCompleteChanged: (payload: any) => {
+            dispatch(completeTodo(payload));
+        },
+        onDelete: (payload:any) => {
+            dispatch(removeTodo(payload));
+        }
+    }
+};
+
+@connect(
+    mapStateToProps,
+    mapDispatchToProps
+)
+export default class TodoItem extends React.Component<ITodoItemProps,ITodoItemState> {
     constructor(props) {
         super(props);
         this.state = {
@@ -20,23 +42,17 @@ class TodoItem extends React.Component<ITodoItemProps,ITodoItemState> {
     
     private onCompleteChanged(event) {
         console.log('-- onCompleteChanged start => ' + JSON.stringify(event.target.checked));
-        // publish({
-        //     key: Keys.CompleteTodo,
-        //     payload: {
-        //         Id: this.state.task.Id,
-        //         Complete: event.target.checked
-        //     }
-        // });
+        this.props.onCompleteChanged({
+            Id: this.state.task.Id,
+            Complete: event.target.checked
+         });
     }
     
     private onDelete(event) {
         console.log('-- onDelete start => ');
-        // publish({
-        //     key: Keys.RemoveTodo,
-        //     payload: {
-        //         Id: this.state.task.Id
-        //     }
-        // });
+        this.props.onDelete({
+            Id: this.state.task.Id
+         });
     }
     
     _updateState(props : ITodoItemProps) {
@@ -68,25 +84,3 @@ class TodoItem extends React.Component<ITodoItemProps,ITodoItemState> {
                 </li>);
     }
 }
-
-const mapStateToProps = (state: IState) => {
-    return {}
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onCompleteChanged: (payload: any) => {
-            dispatch(completeTodo(payload));
-        },
-        onDelete: (payload:any) => {
-            dispatch(removeTodo(payload));
-        }
-    }
-};
-
-const ConnectedTodoItem = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(TodoItem);
-
-export default ConnectedTodoItem as TodoItem;

@@ -4,7 +4,6 @@ import {List} from "immutable";
 import {ITask} from "../Models/ITask";
 import Task from "../Models/Task";
 import {connect} from "react-redux";
-import {addTodo} from "../Models/Actions";
 import {IState} from "../Models/IState";
 import {addTodo} from "../Models/Actions";
 import {Keys} from "../Models/Keys";
@@ -12,7 +11,26 @@ import {Keys} from "../Models/Keys";
 interface INewTodoItemProps { nextId: number, onSave: Function }
 interface INewTodoItemState { task: ITask }
 
-class NewTodoItem extends React.Component<INewTodoItemProps,INewTodoItemState> {
+
+const mapStateToProps = (state: IState, ownProps: {nextId: number}) => {
+    return {
+        nextId: ownProps.nextId
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onSave: (payload: any) => {
+            dispatch(addTodo(payload));
+        }
+    }
+};
+
+@connect(
+    mapStateToProps,
+    mapDispatchToProps
+)
+export default class NewTodoItem extends React.Component<INewTodoItemProps,INewTodoItemState> {
     constructor(props: INewTodoItemProps) {
         super(props);
     }
@@ -68,22 +86,3 @@ class NewTodoItem extends React.Component<INewTodoItemProps,INewTodoItemState> {
                 </div>;
     }
 }
-
-const mapStateToProps = (state: IState) => {
-    return {}
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onSave: (payload: any) => {
-            dispatch(addTodo(payload));
-        }
-    }
-};
-
-const ConnectedNewTodoItem = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(NewTodoItem);
-
-export default ConnectedNewTodoItem as NewTodoItem;
