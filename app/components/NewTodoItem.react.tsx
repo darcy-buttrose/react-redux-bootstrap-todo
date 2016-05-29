@@ -11,25 +11,6 @@ import {Keys} from "../Models/Keys";
 interface INewTodoItemProps { nextId: number, onSave: Function }
 interface INewTodoItemState { task: ITask }
 
-
-const mapStateToProps = (state: IState, ownProps: {nextId: number}) => {
-    return {
-        nextId: ownProps.nextId
-    }
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onSave: (payload: any) => {
-            dispatch(addTodo(payload));
-        }
-    }
-};
-
-@connect(
-    mapStateToProps,
-    mapDispatchToProps
-)
 export default class NewTodoItem extends React.Component<INewTodoItemProps,INewTodoItemState> {
     constructor(props: INewTodoItemProps) {
         super(props);

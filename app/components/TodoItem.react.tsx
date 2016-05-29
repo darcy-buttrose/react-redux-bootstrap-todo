@@ -11,27 +11,6 @@ import {Keys} from "../Models/Keys";
 interface ITodoItemProps { task: ITask, onCompleteChanged: Function, onDelete: Function }
 interface ITodoItemState { task: ITask }
 
-const mapStateToProps = (state: IState, ownProps: {task: ITask}) => {
-    return {
-        task: ownProps.task
-    }
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onCompleteChanged: (payload: any) => {
-            dispatch(completeTodo(payload));
-        },
-        onDelete: (payload:any) => {
-            dispatch(removeTodo(payload));
-        }
-    }
-};
-
-@connect(
-    mapStateToProps,
-    mapDispatchToProps
-)
 export default class TodoItem extends React.Component<ITodoItemProps,ITodoItemState> {
     constructor(props) {
         super(props);
@@ -41,7 +20,7 @@ export default class TodoItem extends React.Component<ITodoItemProps,ITodoItemSt
     }
     
     private onCompleteChanged(event) {
-        console.log('-- onCompleteChanged start => ' + JSON.stringify(event.target.checked));
+        console.log('-- TodoItem::onCompleteChanged start => ' + JSON.stringify(event.target.checked));
         this.props.onCompleteChanged({
             Id: this.state.task.Id,
             Complete: event.target.checked
@@ -49,26 +28,26 @@ export default class TodoItem extends React.Component<ITodoItemProps,ITodoItemSt
     }
     
     private onDelete(event) {
-        console.log('-- onDelete start => ');
+        console.log('-- TodoItem::onDelete start => ');
         this.props.onDelete({
             Id: this.state.task.Id
          });
     }
     
     _updateState(props : ITodoItemProps) {
-        console.log('-- _updateState => ' + JSON.stringify(props));
+        console.log('-- TodoItem::_updateState => ' + JSON.stringify(props));
         this.setState({
             task: props.task
         });
     }
 
     componentDidMount() {
-        console.log('-- componentDidMount => ' + JSON.stringify(this.props));
+        console.log('-- TodoItem::componentDidMount => ' + JSON.stringify(this.props));
         this._updateState(this.props);
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('-- componentWillReceiveProps => ' + JSON.stringify(nextProps));
+        console.log('-- TodoItem::componentWillReceiveProps => ' + JSON.stringify(nextProps));
         if (this.state.task !== nextProps.task) {
             this._updateState(nextProps);
         }

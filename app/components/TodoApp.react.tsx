@@ -8,23 +8,9 @@ import NewTodoItem from "./NewTodoItem.react";
 import {IState} from "../Models/IState";
 import {connect} from "react-redux";
 
-interface ITodoAppProps { }
+interface ITodoAppProps { nextId:number; todos: List<ITask>; onCompleteChanged: Function; onDelete: Function; onSave:Function }
 interface ITodoAppState { nextId:number; todos: List<ITask> }
 
-const mapStateToProps = (state: IState) => {
-    return {
-        todos: state.todos
-    }
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {}
-};
-
-@connect(
-    mapStateToProps,
-    mapDispatchToProps
-)
 export default class TodoApp extends React.Component<ITodoAppProps, ITodoAppState> {
     constructor(props) {
         super(props);
@@ -34,14 +20,46 @@ export default class TodoApp extends React.Component<ITodoAppProps, ITodoAppStat
             ])
         }
     };
-    
+
+    onCompleteChanged(payload: any) {
+        this.props.onCompleteChanged(payload);
+    }
+
+    onDelete(payload:any) {
+        this.props.onDelete(payload);
+    }
+
+    onSave(payload:any) {
+        this.props.onSave(payload);
+    }
+
+
+    _updateState(props : ITodoAppProps) {
+        console.log('-- TodoApp::_updateState => ' + JSON.stringify(props));
+        this.setState({
+            nextId: props.nextId,
+            todos: props.todos
+        });
+    }
+
+    componentDidMount() {
+        console.log('-- TodoApp::componentDidMount => ' + JSON.stringify(this.props));
+        this._updateState(this.props);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        console.log('-- TodoApp::componentWillReceiveProps => ' + JSON.stringify(nextProps));
+        if (this.state.todos !== nextProps.todos) {
+            this._updateState(nextProps);
+        }
+    }
     render() {
         let todoList = this.state.todos.map((task: Task) => {
-            return <TodoItem key={task.Id} task={task} />
+            return <TodoItem key={task.Id} task={task} onCompleteChanged={this.onCompleteChanged} onDelete={this.onDelete} />
         });
         return  (<section id="main">
                     <ul id="todo-list">{todoList}</ul>
-                    <NewTodoItem nextId={this.state.nextId} />
+                    <NewTodoItem nextId={this.state.nextId} onSave={this.onSave} />
                 </section>);
     }
 }
